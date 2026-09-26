@@ -15,7 +15,9 @@ export class RetryManager {
       } catch (e) {
         attempt++;
         if (attempt >= this.maxRetries) throw e;
-        const delay = this.baseDelay * Math.pow(2, attempt);
+        // Add jitter to prevent thundering herd problem
+        const jitter = Math.random() * 200;
+        const delay = (this.baseDelay * Math.pow(2, attempt)) + jitter;
         await this.sleep(delay);
       }
     }
